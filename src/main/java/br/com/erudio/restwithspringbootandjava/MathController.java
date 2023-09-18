@@ -14,7 +14,7 @@ public class MathController {
 
 
         if ((!isNumeric(numberOne) || !isNumeric(numberTwo)) || (numberOne == null || numberTwo ==null)) {
-            throw new NumberFormatException();
+            throw new UnsupportedOperationException("Please set a numeric value");
         }
 
         return convertToDouble(numberOne) + convertToDouble(numberTwo);
