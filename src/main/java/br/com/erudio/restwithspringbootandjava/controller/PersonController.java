@@ -1,9 +1,14 @@
 package br.com.erudio.restwithspringbootandjava.controller;
 
+import br.com.erudio.restwithspringbootandjava.dtos.PersonDTO;
 import br.com.erudio.restwithspringbootandjava.model.PersonModel;
 import br.com.erudio.restwithspringbootandjava.service.PersonService;
+import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +27,10 @@ public class PersonController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public PersonModel create(@RequestBody PersonModel person) throws Exception {
-        return personService.create(person);
+    public ResponseEntity<Object> create(@RequestBody @Valid PersonDTO personDTO) throws Exception {
+        PersonModel personModel = new PersonModel();
+        BeanUtils.copyProperties(personDTO, personModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(personService.create(personModel));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,8 +39,9 @@ public class PersonController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable(value = "id") Long id) throws Exception {
+    public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) throws Exception {
          personService.delete(id);
+         return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
